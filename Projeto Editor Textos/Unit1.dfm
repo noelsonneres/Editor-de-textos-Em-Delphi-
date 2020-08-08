@@ -11,31 +11,10 @@ object FormPrincipal: TFormPrincipal
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object RichEdit1: TRichEdit
-    Left = 0
-    Top = 104
-    Width = 868
-    Height = 524
-    Margins.Left = 20
-    Margins.Right = 20
-    Margins.Bottom = 20
-    Align = alBottom
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    HideScrollBars = False
-    ParentFont = False
-    PopupMenu = PopupMenu1
-    ScrollBars = ssVertical
-    TabOrder = 0
-    WantTabs = True
-    Zoom = 100
-  end
   object Panel2: TPanel
     Left = 0
     Top = 0
@@ -45,11 +24,10 @@ object FormPrincipal: TFormPrincipal
     BevelOuter = bvNone
     Color = 3158064
     ParentBackground = False
-    TabOrder = 1
-    ExplicitWidth = 784
+    TabOrder = 0
     object SpeedButton1: TSpeedButton
       Left = 8
-      Top = 6
+      Top = 7
       Width = 72
       Height = 27
       Caption = 'Abir'
@@ -1131,8 +1109,7 @@ object FormPrincipal: TFormPrincipal
     BevelOuter = bvNone
     Color = 3158064
     ParentBackground = False
-    TabOrder = 2
-    ExplicitWidth = 784
+    TabOrder = 1
     object SpeedButton13: TSpeedButton
       Left = 151
       Top = 18
@@ -1314,8 +1291,8 @@ object FormPrincipal: TFormPrincipal
       OnClick = SpeedButton14Click
     end
     object SpeedButton15: TSpeedButton
-      Left = 697
-      Top = 12
+      Left = 649
+      Top = 16
       Width = 104
       Height = 27
       Caption = 'Imprimir'
@@ -1404,8 +1381,8 @@ object FormPrincipal: TFormPrincipal
       OnClick = SpeedButton15Click
     end
     object SpeedButton12: TSpeedButton
-      Left = 587
-      Top = 12
+      Left = 551
+      Top = 16
       Width = 104
       Height = 27
       Caption = 'Exp. PDF'
@@ -1519,6 +1496,26 @@ object FormPrincipal: TFormPrincipal
       ParentFont = False
       TabOrder = 1
     end
+  end
+  object RichEdit1: TRichEdit
+    Left = 0
+    Top = 89
+    Width = 868
+    Height = 539
+    Align = alClient
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = []
+    Lines.Strings = (
+      '')
+    ParentFont = False
+    ScrollBars = ssVertical
+    TabOrder = 2
+    WantTabs = True
+    Zoom = 100
+    ExplicitTop = 87
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Left = 552

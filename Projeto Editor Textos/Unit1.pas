@@ -12,7 +12,6 @@ uses
 type
   TFormPrincipal = class(TForm)
     OpenTextFileDialog1: TOpenTextFileDialog;
-    RichEdit1: TRichEdit;
     SaveDialog1: TSaveDialog;
     PrintDialog1: TPrintDialog;
     ColorDialog1: TColorDialog;
@@ -44,6 +43,7 @@ type
     Cordafonte1: TMenuItem;
     SpeedButton16: TSpeedButton;
     SpeedButton12: TSpeedButton;
+    RichEdit1: TRichEdit;
     procedure Button5Click(Sender: TObject);
     Procedure FindReplace (const Enc, subs: String; Var Texto: TRichedit);
     procedure acAbrirExecute(Sender: TObject);
@@ -70,9 +70,16 @@ type
     procedure SpeedButton15Click(Sender: TObject);
     procedure SpeedButton16Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure SpeedButton17Click(Sender: TObject);
+    procedure SpeedButton18Click(Sender: TObject);
   private
     { Private declarations }
     procedure PrintStrings(Strings: TStrings);
+    var
+      FSalvar:Boolean;
+      FCaminhoArquivo:string;
+      FTexto: WideString;
   public
     { Public declarations }
   end;
@@ -143,6 +150,11 @@ Begin
   end;
 
 End;
+
+procedure TFormPrincipal.FormCreate(Sender: TObject);
+begin
+  FSalvar := false;
+end;
 
 procedure TFormPrincipal.FormShow(Sender: TObject);
 begin
@@ -256,57 +268,95 @@ end;
 procedure TFormPrincipal.SpeedButton16Click(Sender: TObject);
 begin
 
-{Falta códificar esta parte da aplicação}
+  if SaveDialog1.Execute then
+   RichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
 
+end;
+
+procedure TFormPrincipal.SpeedButton17Click(Sender: TObject);
+begin
+  RichEdit1.Undo;
+end;
+
+procedure TFormPrincipal.SpeedButton18Click(Sender: TObject);
+begin
+  RichEdit1.UndockHeight;
 end;
 
 procedure TFormPrincipal.SpeedButton1Click(Sender: TObject);
 begin
   if OpenTextFileDialog1.Execute then
-      RichEdit1.Lines.LoadFromFile(OpenTextFileDialog1.FileName);
+  begin
 
-//  RichEdit1.Lines.Add('');
-  RichEdit1.SelectAll;
+    RichEdit1.Lines.LoadFromFile(OpenTextFileDialog1.FileName);
 
-  RichEdit1.Paragraph.FirstIndent := 10;
-  RichEdit1.Paragraph.LeftIndent := 15;
-  RichEdit1.Paragraph.RightIndent := 15;
+    RichEdit1.SelectAll;
 
-  RichEdit1.SelStart := 0;
+    RichEdit1.Paragraph.FirstIndent := 10;
+    RichEdit1.Paragraph.LeftIndent := 15;
+    RichEdit1.Paragraph.RightIndent := 15;
+
+    RichEdit1.SelStart := 0;
+
+    FSalvar := true;
+    FCaminhoArquivo := OpenTextFileDialog1.FileName;
+
+    FTexto := RichEdit1.Lines.Text;
+
+  end;
 
 end;
 
 procedure TFormPrincipal.SpeedButton2Click(Sender: TObject);
 begin
   RichEdit1.Clear;
+  FSalvar := false;
 end;
 
 procedure TFormPrincipal.SpeedButton3Click(Sender: TObject);
 begin
-  if SaveDialog1.Execute then
-   RichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
+
+  if FTexto <> RichEdit1.Lines.Text then
+  begin
+
+    if FSalvar = false then
+    begin
+      if SaveDialog1.Execute then
+        RichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
+    end
+    else
+    begin
+      RichEdit1.Lines.SaveToFile(FCaminhoArquivo);
+    end;
+
+  end;
+
 end;
 
 procedure TFormPrincipal.SpeedButton4Click(Sender: TObject);
 begin
   if ColorDialog1.Execute then
-      RichEdit1.SelAttributes.Color := ColorDialog1.Color;
+  begin
+    RichEdit1.SelAttributes.Color := ColorDialog1.Color;
+  end;
 end;
 
 procedure TFormPrincipal.SpeedButton5Click(Sender: TObject);
 begin
   if FontDialog1.Execute then
+  begin
     RichEdit1.Font := FontDialog1.Font;
+  end;
 end;
 
 procedure TFormPrincipal.SpeedButton6Click(Sender: TObject);
 begin
-  RichEdit1.Paragraph.Alignment := taLeftJustify
+  RichEdit1.Paragraph.Alignment := taLeftJustify;
 end;
 
 procedure TFormPrincipal.SpeedButton7Click(Sender: TObject);
 begin
-  RichEdit1.Paragraph.Alignment := taCenter
+  RichEdit1.Paragraph.Alignment := taCenter;
 end;
 
 procedure TFormPrincipal.SpeedButton8Click(Sender: TObject);
