@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<BorlandProject>
-  <Transactions>
-    <Transaction>2020/08/07 19:32:35.533,=C:\Users\noels\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2020/08/07 19:37:38.383,C:\Users\noels\Documents\GitHub\Editor-de-textos-Em-Delphi-\Projeto Editor Textos RX\Unit1.pas=C:\Users\noels\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2020/08/07 19:37:38.383,C:\Users\noels\Documents\GitHub\Editor-de-textos-Em-Delphi-\Projeto Editor Textos RX\Unit1.dfm=C:\Users\noels\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2020/08/07 19:37:40.142,C:\Users\noels\Documents\GitHub\Editor-de-textos-Em-Delphi-\Projeto Editor Textos RX\Project1.dproj=C:\Users\noels\Documents\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
-  </Transactions>
-</BorlandProject>
