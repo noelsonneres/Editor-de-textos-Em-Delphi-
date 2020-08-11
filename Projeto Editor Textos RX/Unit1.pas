@@ -48,8 +48,11 @@ type
     PrinterSetupDialog1: TPrinterSetupDialog;
     PageSetupDialog1: TPageSetupDialog;
     Edit2: TEdit;
+    SpeedButton17: TSpeedButton;
+    SpeedButton18: TSpeedButton;
+    SpeedButton19: TSpeedButton;
     procedure Button5Click(Sender: TObject);
-    Procedure FindReplace(const Enc, subs: String; Var Texto: TRichedit);
+    Procedure FindReplace(const Enc, subs: String; Var Texto: TRxRichEdit);
     procedure acAbrirExecute(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
@@ -73,11 +76,15 @@ type
     procedure SpeedButton15Click(Sender: TObject);
     procedure SpeedButton16Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure SpeedButton17Click(Sender: TObject);
+    procedure SpeedButton18Click(Sender: TObject);
+    procedure SpeedButton19Click(Sender: TObject);
   private
     { Private declarations }
     procedure PrintStrings(Strings: TStrings);
     procedure SetRichEditMargins(const mLeft, mRight, mTop, mBottom: extended;
-      const re: TRxRichedit);
+      const re: TRxRichEdit);
+    procedure SubstituirTexto(Rich: TRxRichEdit; TextoAntigo, TextoNovo: string);
 
   var
     FTexto: WideString;
@@ -129,13 +136,13 @@ begin
 end;
 
 procedure TFormPrincipal.FindReplace(const Enc, subs: String;
-  var Texto: TRichedit);
+  var Texto: TRxRichEdit);
 Var
   i, Posicao: Integer;
   Linha: string;
 Begin
 
-  For i := 0 to Texto.Lines.count - 1 do
+  For i := 0 to Texto.Lines.Count - 1 do
   begin
 
     Linha := Texto.Lines[i];
@@ -167,14 +174,14 @@ begin
   try
     Rewrite(Prn);
     try
-      for i := 0 to Strings.count - 1 do
+      for i := 0 to Strings.Count - 1 do
         writeln(Prn, Strings.Strings[i]);
     finally
       CloseFile(Prn);
     end;
   except
     on EInOutError do
-      MessageDlg('Erro imprimindo texto.', mtError, [mbOk], 0);
+      MessageDLG('Erro imprimindo texto.', mtError, [mbOk], 0);
   end;
 end;
 
@@ -184,28 +191,28 @@ begin
 end;
 
 procedure TFormPrincipal.SetRichEditMargins(const mLeft, mRight, mTop,
-  mBottom: extended; const re: TRxRichedit);
+  mBottom: extended; const re: TRxRichEdit);
 var
-   ppiX, ppiY : integer;
-   spaceLeft, spaceTop : integer;
-   r : TRect;
+  ppiX, ppiY: Integer;
+  spaceLeft, spaceTop: Integer;
+  r: TRect;
 begin
-   // pixels por polegadas
-   ppiX := GetDeviceCaps(Printer.Handle, LOGPIXELSX);
-   ppiY := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
+  // pixels por polegadas
+  ppiX := GetDeviceCaps(Printer.Handle, LOGPIXELSX);
+  ppiY := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
 
-   // não imprimir margens
-   spaceLeft := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
-   spaceTop := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
+  // não imprimir margens
+  spaceLeft := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
+  spaceTop := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
 
-   //calcular as margens
-   R.Left := Round(ppiX * mLeft) - spaceLeft;
-   R.Right := Printer.PageWidth - Round(ppiX * mRight) - spaceLeft;
-   R.Top := Round(ppiY * mTop) - spaceTop;
-   R.Bottom := Printer.PageHeight - Round(ppiY * mBottom) - spaceTop;
+  // calcular as margens
+  r.Left := Round(ppiX * mLeft) - spaceLeft;
+  r.Right := Printer.PageWidth - Round(ppiX * mRight) - spaceLeft;
+  r.Top := Round(ppiY * mTop) - spaceTop;
+  r.Bottom := Printer.PageHeight - Round(ppiY * mBottom) - spaceTop;
 
-   // setar as margens
-   re.PageRect := r;
+  // setar as margens
+  re.PageRect := r;
 end;
 
 procedure TFormPrincipal.SpeedButton10Click(Sender: TObject);
@@ -270,38 +277,38 @@ begin
   // RxRichEdit1.SelStart := i;
   // RxRichEdit1.SelLength := length(edit1.text);
 
-  // FindReplace(Edit1.Text, Edit2.Text, RxRichEdit1);
+//   FindReplace(Edit1.Text, Edit2.Text, RxRichEdit1);
 
   with RxRichEdit1 do
     ReplaceDialog(SelText, '');
-
 end;
 
 procedure TFormPrincipal.SpeedButton15Click(Sender: TObject);
-var MEsq, MDir, MSup, MInf : real;
+var
+  MEsq, MDir, MSup, MInf: real;
 begin
-   {Estilo = RETRATO
-   Margem Esquerda = 25
-   Margem Direita = 20
-   Margem Superior = 20
-   Margem Inferior = 20}
+  { Estilo = RETRATO
+    Margem Esquerda = 25
+    Margem Direita = 20
+    Margem Superior = 20
+    Margem Inferior = 20 }
 
-   if PageSetupDialog1.Execute then
-      begin
+  if PageSetupDialog1.Execute then
+  begin
 
-         Printer.Orientation := poPortrait; // vertical
+    Printer.Orientation := poPortrait; // vertical
 
-         MEsq := (PageSetupDialog1.MarginLeft / 2.54)/1000;
-         MDir := (PageSetupDialog1.MarginRight/ 2.54)/1000;
-         MSup := (PageSetupDialog1.MarginTop  / 2.54)/1000;
-         MInf := (PageSetupDialog1.MarginBottom / 2.54)/1000;
+    MEsq := (PageSetupDialog1.MarginLeft / 2.54) / 1000;
+    MDir := (PageSetupDialog1.MarginRight / 2.54) / 1000;
+    MSup := (PageSetupDialog1.MarginTop / 2.54) / 1000;
+    MInf := (PageSetupDialog1.MarginBottom / 2.54) / 1000;
 
-         SetRichEditMargins(MEsq, MDir, MSup, MInf, RxRichEdit1);
+    SetRichEditMargins(MEsq, MDir, MSup, MInf, RxRichEdit1);
 
-         if PrintDialog1.Execute then
-           RxRichEdit1.Print('Printing with margins');
+    if PrintDialog1.Execute then
+      RxRichEdit1.Print('Printing with margins');
 
-      end;
+  end;
 end;
 
 procedure TFormPrincipal.SpeedButton16Click(Sender: TObject);
@@ -309,6 +316,22 @@ begin
 
   { Falta códificar esta parte da aplicação }
 
+end;
+
+procedure TFormPrincipal.SpeedButton17Click(Sender: TObject);
+begin
+  SubstituirTexto(RxRichEdit1, Edit1.Text, Edit2.Text);
+  RxRichEdit1.SelStart := 0;
+end;
+
+procedure TFormPrincipal.SpeedButton18Click(Sender: TObject);
+begin
+  RxRichEdit1.Undo;
+end;
+
+procedure TFormPrincipal.SpeedButton19Click(Sender: TObject);
+begin
+  RxRichEdit1.Redo;
 end;
 
 procedure TFormPrincipal.SpeedButton1Click(Sender: TObject);
@@ -375,6 +398,29 @@ begin
   else
     RxRichEdit1.SelAttributes.Style := RxRichEdit1.SelAttributes.Style
       - [fsBold]
+end;
+
+procedure TFormPrincipal.SubstituirTexto(Rich: TRxRichEdit; TextoAntigo,
+  TextoNovo: string);
+var
+  Posicao: integer;
+begin
+  Posicao := 1;
+
+  With Rich do
+    repeat
+      Posicao := FindText(TextoAntigo, 0, Length(Text), []);
+
+      if Posicao > 0 then
+      begin
+        SelStart := Posicao;
+        SelLength := Length(TextoAntigo);
+        SelText := TextoNovo;
+
+        SetFocus;
+        Posicao := 0;
+      end;
+    until (Posicao <> 0);
 end;
 
 end.

@@ -1515,7 +1515,6 @@ object FormPrincipal: TFormPrincipal
     TabOrder = 2
     WantTabs = True
     Zoom = 100
-    ExplicitTop = 87
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Left = 552
