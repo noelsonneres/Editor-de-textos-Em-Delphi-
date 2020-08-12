@@ -24,6 +24,7 @@ object FormPrincipal: TFormPrincipal
     Color = 3158064
     ParentBackground = False
     TabOrder = 0
+    ExplicitWidth = 868
     object SpeedButton1: TSpeedButton
       Left = 6
       Top = 7
@@ -1287,6 +1288,7 @@ object FormPrincipal: TFormPrincipal
     Color = 3158064
     ParentBackground = False
     TabOrder = 1
+    ExplicitWidth = 868
     object SpeedButton13: TSpeedButton
       Left = 151
       Top = 18
@@ -1779,11 +1781,9 @@ object FormPrincipal: TFormPrincipal
     Font.Name = 'Tahoma'
     Font.Style = []
     ParentFont = False
-    PopupMenu = PopupMenu1
     TabOrder = 2
     WantTabs = True
     ExplicitLeft = -2
-    ExplicitTop = 95
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Left = 552

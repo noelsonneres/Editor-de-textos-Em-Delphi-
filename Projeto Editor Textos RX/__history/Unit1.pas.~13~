@@ -386,9 +386,7 @@ procedure TFormPrincipal.SpeedButton5Click(Sender: TObject);
 begin
 
   FontDialog1.Font.Assign(RxRichEdit1.SelAttributes);
-
   if FontDialog1.Execute then CurrText.Assign(FontDialog1.Font);
-    focusEditor;
 
 end;
 
