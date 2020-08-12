@@ -1783,7 +1783,7 @@ object FormPrincipal: TFormPrincipal
     TabOrder = 2
     WantTabs = True
     ExplicitLeft = -2
-    ExplicitTop = 95
+    ExplicitTop = 89
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Left = 552

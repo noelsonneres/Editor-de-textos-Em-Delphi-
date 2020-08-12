@@ -49,6 +49,8 @@ type
     PageSetupDialog1: TPageSetupDialog;
     Edit2: TEdit;
     SpeedButton17: TSpeedButton;
+    SpeedButton18: TSpeedButton;
+    SpeedButton19: TSpeedButton;
     procedure Button5Click(Sender: TObject);
     Procedure FindReplace(const Enc, subs: String; Var Texto: TRxRichEdit);
     procedure acAbrirExecute(Sender: TObject);
@@ -75,15 +77,22 @@ type
     procedure SpeedButton16Click(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure SpeedButton17Click(Sender: TObject);
+    procedure SpeedButton18Click(Sender: TObject);
+    procedure SpeedButton19Click(Sender: TObject);
   private
     { Private declarations }
     procedure PrintStrings(Strings: TStrings);
     procedure SetRichEditMargins(const mLeft, mRight, mTop, mBottom: extended;
       const re: TRxRichEdit);
-    procedure SubstituirTexto(Rich: TRxRichEdit; TextoAntigo, TextoNovo: string);
+    procedure SubstituirTexto(Rich: TRxRichEdit;
+      TextoAntigo, TextoNovo: string);
+    function CurrText: TRxTextAttributes;
+    procedure focusEditor;
 
   var
     FTexto: WideString;
+    FSalvar: boolean;
+    FCaminhoArquivo: string;
   public
     { Public declarations }
   end;
@@ -131,6 +140,14 @@ begin
 
 end;
 
+function TFormPrincipal.CurrText: TRxTextAttributes;
+begin
+  if RxRichEdit1.SelLength > 0 then
+    Result := RxRichEdit1.SelAttributes
+  else
+    Result := RxRichEdit1.WordAttributes;
+end;
+
 procedure TFormPrincipal.FindReplace(const Enc, subs: String;
   var Texto: TRxRichEdit);
 Var
@@ -156,9 +173,17 @@ Begin
 
 End;
 
+procedure TFormPrincipal.focusEditor;
+begin
+  with RxRichEdit1 do
+    if CanFocus then
+      SetFocus;
+end;
+
 procedure TFormPrincipal.FormShow(Sender: TObject);
 begin
   RxRichEdit1.SelAttributes.Size := 12;
+  FSalvar := false;
 end;
 
 procedure TFormPrincipal.PrintStrings(Strings: TStrings);
@@ -273,7 +298,7 @@ begin
   // RxRichEdit1.SelStart := i;
   // RxRichEdit1.SelLength := length(edit1.text);
 
-//   FindReplace(Edit1.Text, Edit2.Text, RxRichEdit1);
+  // FindReplace(Edit1.Text, Edit2.Text, RxRichEdit1);
 
   with RxRichEdit1 do
     ReplaceDialog(SelText, '');
@@ -317,29 +342,46 @@ end;
 procedure TFormPrincipal.SpeedButton17Click(Sender: TObject);
 begin
   SubstituirTexto(RxRichEdit1, Edit1.Text, Edit2.Text);
+  RxRichEdit1.SelStart := 0;
+end;
+
+procedure TFormPrincipal.SpeedButton18Click(Sender: TObject);
+begin
+  RxRichEdit1.Undo;
+end;
+
+procedure TFormPrincipal.SpeedButton19Click(Sender: TObject);
+begin
+  RxRichEdit1.Redo;
 end;
 
 procedure TFormPrincipal.SpeedButton1Click(Sender: TObject);
 begin
   if OpenTextFileDialog1.Execute then
+  begin
+
     RxRichEdit1.Lines.LoadFromFile(OpenTextFileDialog1.FileName);
+    RxRichEdit1.SelectAll;
 
-  // RxRichEdit1.Lines.Add('');
-  RxRichEdit1.SelectAll;
+    RxRichEdit1.Paragraph.FirstIndent := 10;
+    RxRichEdit1.Paragraph.LeftIndent := 25;
+    RxRichEdit1.Paragraph.RightIndent := 25;
 
-  RxRichEdit1.Paragraph.FirstIndent := 10;
-  RxRichEdit1.Paragraph.LeftIndent := 25;
-  RxRichEdit1.Paragraph.RightIndent := 25;
+    RxRichEdit1.SelStart := 0;
 
-  RxRichEdit1.SelStart := 0;
+    FSalvar := true;
+    FCaminhoArquivo := OpenTextFileDialog1.FileName;
 
-  FTexto := RxRichEdit1.Lines.Text;
+    FTexto := RxRichEdit1.Lines.Text;
+
+  end;
 
 end;
 
 procedure TFormPrincipal.SpeedButton2Click(Sender: TObject);
 begin
   RxRichEdit1.Clear;
+  FSalvar := false;
 end;
 
 procedure TFormPrincipal.SpeedButton3Click(Sender: TObject);
@@ -356,8 +398,13 @@ end;
 
 procedure TFormPrincipal.SpeedButton5Click(Sender: TObject);
 begin
+
+  FontDialog1.Font.Assign(RxRichEdit1.SelAttributes);
+
   if FontDialog1.Execute then
-    RxRichEdit1.Font := FontDialog1.Font;
+    CurrText.Assign(FontDialog1.Font);
+  focusEditor;
+
 end;
 
 procedure TFormPrincipal.SpeedButton6Click(Sender: TObject);
@@ -385,10 +432,10 @@ begin
       - [fsBold]
 end;
 
-procedure TFormPrincipal.SubstituirTexto(Rich: TRxRichEdit; TextoAntigo,
-  TextoNovo: string);
+procedure TFormPrincipal.SubstituirTexto(Rich: TRxRichEdit;
+  TextoAntigo, TextoNovo: string);
 var
-  Posicao: integer;
+  Posicao: Integer;
 begin
   Posicao := 1;
 
