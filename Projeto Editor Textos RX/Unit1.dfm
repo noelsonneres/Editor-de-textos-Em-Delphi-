@@ -1649,7 +1649,7 @@ object FormPrincipal: TFormPrincipal
     end
     object SpeedButton17: TSpeedButton
       Left = 401
-      Top = 13
+      Top = 16
       Width = 152
       Height = 30
       Caption = 'Substituir Tudo'
@@ -1783,7 +1783,6 @@ object FormPrincipal: TFormPrincipal
     TabOrder = 2
     WantTabs = True
     ExplicitLeft = -2
-    ExplicitTop = 89
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Left = 552

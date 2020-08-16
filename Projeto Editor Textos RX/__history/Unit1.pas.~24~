@@ -84,10 +84,15 @@ type
     procedure PrintStrings(Strings: TStrings);
     procedure SetRichEditMargins(const mLeft, mRight, mTop, mBottom: extended;
       const re: TRxRichEdit);
-    procedure SubstituirTexto(Rich: TRxRichEdit; TextoAntigo, TextoNovo: string);
+    procedure SubstituirTexto(Rich: TRxRichEdit;
+      TextoAntigo, TextoNovo: string);
+    function CurrText: TRxTextAttributes;
+    procedure focusEditor;
 
   var
     FTexto: WideString;
+    FSalvar: boolean;
+    FCaminhoArquivo: string;
   public
     { Public declarations }
   end;
@@ -135,6 +140,14 @@ begin
 
 end;
 
+function TFormPrincipal.CurrText: TRxTextAttributes;
+begin
+  if RxRichEdit1.SelLength > 0 then
+    Result := RxRichEdit1.SelAttributes
+  else
+    Result := RxRichEdit1.WordAttributes;
+end;
+
 procedure TFormPrincipal.FindReplace(const Enc, subs: String;
   var Texto: TRxRichEdit);
 Var
@@ -160,9 +173,17 @@ Begin
 
 End;
 
+procedure TFormPrincipal.focusEditor;
+begin
+  with RxRichEdit1 do
+    if CanFocus then
+      SetFocus;
+end;
+
 procedure TFormPrincipal.FormShow(Sender: TObject);
 begin
   RxRichEdit1.SelAttributes.Size := 12;
+  FSalvar := false;
 end;
 
 procedure TFormPrincipal.PrintStrings(Strings: TStrings);
@@ -241,30 +262,21 @@ begin
 end;
 
 procedure TFormPrincipal.SpeedButton13Click(Sender: TObject);
-{ Link do código abaixo
-  https://www.devmedia.com.br/pesquisando-e-destacando-texto-no-richedit/24260 }
 var
-  iPosIni: Integer;
-
+  Posicao: integer;
 begin
-  // Carrega o RichEdit com as propriedades iniciais
-  RxRichEdit1.SelStart := 0;
-  RxRichEdit1.SelLength := Length(RxRichEdit1.Text);
-  // RxRichEdit1.SelAttributes.color := clBlack;
-  // RxRichEdit1.SelAttributes.style := [];
-  // RxRichEdit1.SelAttributes.Size  := 8;
+  Posicao := 1;
 
-  // Encontra e atribui a posição inicial do texto no RxRichEdit1
-  iPosIni := RxRichEdit1.FindText(Edit1.Text, 0, Length(RxRichEdit1.Text), []);
-
-  // Verifica se o texto foi encontrado
-  if iPosIni >= 0 then
+  With RxRichEdit1 do
   begin
-    RxRichEdit1.SelStart := iPosIni;
-    RxRichEdit1.SelLength := Length(Edit1.Text);
-    RxRichEdit1.SelAttributes.Color := clRed;
-    RxRichEdit1.SelAttributes.Style := [fsBold];
-    // RxRichEdit1.SelAttributes.Size  := RxRichEdit1.SelAttributes.Size + 16;
+    Posicao := FindText(Edit1.Text, Length(Text), []);
+
+    SelStart := Posicao;
+    SelLength := Length(Edit1.Text);
+//        SelText := TextoNovo;
+
+    SetFocus;
+
   end;
 end;
 
@@ -277,7 +289,7 @@ begin
   // RxRichEdit1.SelStart := i;
   // RxRichEdit1.SelLength := length(edit1.text);
 
-//   FindReplace(Edit1.Text, Edit2.Text, RxRichEdit1);
+  // FindReplace(Edit1.Text, Edit2.Text, RxRichEdit1);
 
   with RxRichEdit1 do
     ReplaceDialog(SelText, '');
@@ -314,7 +326,8 @@ end;
 procedure TFormPrincipal.SpeedButton16Click(Sender: TObject);
 begin
 
-  { Falta códificar esta parte da aplicação }
+  if SaveDialog1.Execute then
+    RxRichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
 
 end;
 
@@ -337,30 +350,49 @@ end;
 procedure TFormPrincipal.SpeedButton1Click(Sender: TObject);
 begin
   if OpenTextFileDialog1.Execute then
+  begin
+
     RxRichEdit1.Lines.LoadFromFile(OpenTextFileDialog1.FileName);
+    RxRichEdit1.SelectAll;
 
-  // RxRichEdit1.Lines.Add('');
-  RxRichEdit1.SelectAll;
+    RxRichEdit1.Paragraph.FirstIndent := 10;
+    RxRichEdit1.Paragraph.LeftIndent := 25;
+    RxRichEdit1.Paragraph.RightIndent := 25;
 
-  RxRichEdit1.Paragraph.FirstIndent := 10;
-  RxRichEdit1.Paragraph.LeftIndent := 25;
-  RxRichEdit1.Paragraph.RightIndent := 25;
+    RxRichEdit1.SelStart := 0;
 
-  RxRichEdit1.SelStart := 0;
+    FSalvar := true;
+    FCaminhoArquivo := OpenTextFileDialog1.FileName;
 
-  FTexto := RxRichEdit1.Lines.Text;
+    FTexto := RxRichEdit1.Lines.Text;
+
+  end;
 
 end;
 
 procedure TFormPrincipal.SpeedButton2Click(Sender: TObject);
 begin
   RxRichEdit1.Clear;
+  FSalvar := false;
 end;
 
 procedure TFormPrincipal.SpeedButton3Click(Sender: TObject);
 begin
-  if SaveDialog1.Execute then
-    RxRichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
+  if FTexto <> RxRichEdit1.Lines.Text then
+  begin
+
+    if FSalvar = false then
+    begin
+      if SaveDialog1.Execute then
+        RxRichEdit1.Lines.SaveToFile(SaveDialog1.FileName);
+    end
+    else
+    begin
+      RxRichEdit1.Lines.SaveToFile(FCaminhoArquivo);
+    end;
+
+  end;
+
 end;
 
 procedure TFormPrincipal.SpeedButton4Click(Sender: TObject);
@@ -372,8 +404,11 @@ end;
 procedure TFormPrincipal.SpeedButton5Click(Sender: TObject);
 begin
 
+  FontDialog1.Font.Assign(RxRichEdit1.SelAttributes);
+
   if FontDialog1.Execute then
-    RxRichEdit1.Font.Name := FontDialog1.Font;
+    CurrText.Assign(FontDialog1.Font);
+  focusEditor;
 
 end;
 
@@ -402,10 +437,10 @@ begin
       - [fsBold]
 end;
 
-procedure TFormPrincipal.SubstituirTexto(Rich: TRxRichEdit; TextoAntigo,
-  TextoNovo: string);
+procedure TFormPrincipal.SubstituirTexto(Rich: TRxRichEdit;
+  TextoAntigo, TextoNovo: string);
 var
-  Posicao: integer;
+  Posicao: Integer;
 begin
   Posicao := 1;
 

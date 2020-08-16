@@ -257,35 +257,49 @@ begin
 end;
 
 procedure TFormPrincipal.SpeedButton12Click(Sender: TObject);
+var
+  MEsq, MDir, MSup, MInf: real;
 begin
-  RxRichEdit1.Print('');
+  { Estilo = RETRATO
+    Margem Esquerda = 25
+    Margem Direita = 20
+    Margem Superior = 20
+    Margem Inferior = 20 }
+
+  if PageSetupDialog1.Execute then
+  begin
+
+    Printer.Orientation := poPortrait; // vertical
+
+    MEsq := (PageSetupDialog1.MarginLeft / 2.54) / 1000;
+    MDir := (PageSetupDialog1.MarginRight / 2.54) / 1000;
+    MSup := (PageSetupDialog1.MarginTop / 2.54) / 1000;
+    MInf := (PageSetupDialog1.MarginBottom / 2.54) / 1000;
+
+    SetRichEditMargins(MEsq, MDir, MSup, MInf, RxRichEdit1);
+
+    RxRichEdit1.Print('Printing with margins');
+
+  end;
 end;
 
+
 procedure TFormPrincipal.SpeedButton13Click(Sender: TObject);
-{ Link do código abaixo
-  https://www.devmedia.com.br/pesquisando-e-destacando-texto-no-richedit/24260 }
 var
-  iPosIni: Integer;
-
+  Posicao: integer;
 begin
-  // Carrega o RichEdit com as propriedades iniciais
-  RxRichEdit1.SelStart := 0;
-  RxRichEdit1.SelLength := Length(RxRichEdit1.Text);
-  // RxRichEdit1.SelAttributes.color := clBlack;
-  // RxRichEdit1.SelAttributes.style := [];
-  // RxRichEdit1.SelAttributes.Size  := 8;
+  Posicao := 1;
 
-  // Encontra e atribui a posição inicial do texto no RxRichEdit1
-  iPosIni := RxRichEdit1.FindText(Edit1.Text, 0, Length(RxRichEdit1.Text), []);
-
-  // Verifica se o texto foi encontrado
-  if iPosIni >= 0 then
+  With RxRichEdit1 do
   begin
-    RxRichEdit1.SelStart := iPosIni;
-    RxRichEdit1.SelLength := Length(Edit1.Text);
-    RxRichEdit1.SelAttributes.Color := clRed;
-    RxRichEdit1.SelAttributes.Style := [fsBold];
-    // RxRichEdit1.SelAttributes.Size  := RxRichEdit1.SelAttributes.Size + 16;
+    Posicao := FindText(Edit1.Text, 0, Length(Text), []);
+
+    SelStart := Posicao;
+    SelLength := Length(Edit1.Text);
+//        SelText := TextoNovo;
+
+    SetFocus;
+
   end;
 end;
 
