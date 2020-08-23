@@ -51,6 +51,7 @@ type
     SpeedButton17: TSpeedButton;
     SpeedButton18: TSpeedButton;
     SpeedButton19: TSpeedButton;
+    Button1: TButton;
     procedure Button5Click(Sender: TObject);
     Procedure FindReplace(const Enc, subs: String; Var Texto: TRxRichEdit);
     procedure acAbrirExecute(Sender: TObject);
@@ -79,6 +80,7 @@ type
     procedure SpeedButton17Click(Sender: TObject);
     procedure SpeedButton18Click(Sender: TObject);
     procedure SpeedButton19Click(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     procedure PrintStrings(Strings: TStrings);
@@ -108,6 +110,11 @@ procedure TFormPrincipal.acAbrirExecute(Sender: TObject);
 begin
   showmessage('Teste');
 end;
+
+procedure TFormPrincipal.Button1Click(Sender: TObject);
+begin
+// RxRichEdit1.DrawEndPage := true;
+ end;
 
 procedure TFormPrincipal.Button5Click(Sender: TObject);
 begin
@@ -388,6 +395,8 @@ begin
     FCaminhoArquivo := OpenTextFileDialog1.FileName;
 
     FTexto := RxRichEdit1.Lines.Text;
+
+//    RxRichEdit1.DrawEndPage := true;
 
   end;
 

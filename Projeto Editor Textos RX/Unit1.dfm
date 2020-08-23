@@ -2,9 +2,9 @@ object FormPrincipal: TFormPrincipal
   Left = 0
   Top = 0
   Caption = 'Editor de textos simples'
-  ClientHeight = 628
+  ClientHeight = 640
   ClientWidth = 960
-  Color = clBtnFace
+  Color = 3158064
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -1276,6 +1276,15 @@ object FormPrincipal: TFormPrincipal
       ParentFont = False
       OnClick = SpeedButton19Click
     end
+    object Button1: TButton
+      Left = 841
+      Top = 9
+      Width = 75
+      Height = 25
+      Caption = 'Button1'
+      TabOrder = 0
+      OnClick = Button1Click
+    end
   end
   object Panel1: TPanel
     Left = 0
@@ -1766,12 +1775,14 @@ object FormPrincipal: TFormPrincipal
   end
   object RxRichEdit1: TRxRichEdit
     AlignWithMargins = True
-    Left = 3
-    Top = 92
-    Width = 954
-    Height = 533
+    Left = 63
+    Top = 98
+    Width = 814
+    Height = 519
     DrawEndPage = False
-    Align = alClient
+    Align = alCustom
+    AutoURLDetect = False
+    Anchors = [akLeft, akTop, akRight, akBottom]
     BorderStyle = bsNone
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -1782,7 +1793,8 @@ object FormPrincipal: TFormPrincipal
     PopupMenu = PopupMenu1
     TabOrder = 2
     WantTabs = True
-    ExplicitLeft = -2
+    ExplicitLeft = 60
+    ExplicitTop = 95
   end
   object OpenTextFileDialog1: TOpenTextFileDialog
     Left = 552
