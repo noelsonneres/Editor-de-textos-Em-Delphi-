@@ -9,7 +9,7 @@ uses
   System.UITypes,
   RichEdit, Vcl.ComCtrls, Vcl.Printers,
   MidasLib, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Imaging.pngimage, System.Actions,
-  Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.Menus, RxRichEd;
+  Vcl.ActnList, System.ImageList, Vcl.ImgList, Vcl.Menus, RxRichEd, ClipBrd;
 
 type
   TFormPrincipal = class(TForm)
@@ -51,7 +51,8 @@ type
     SpeedButton17: TSpeedButton;
     SpeedButton18: TSpeedButton;
     SpeedButton19: TSpeedButton;
-    Button1: TButton;
+    SpeedButton20: TSpeedButton;
+    SpeedButton21: TSpeedButton;
     procedure Button5Click(Sender: TObject);
     Procedure FindReplace(const Enc, subs: String; Var Texto: TRxRichEdit);
     procedure acAbrirExecute(Sender: TObject);
@@ -80,7 +81,10 @@ type
     procedure SpeedButton17Click(Sender: TObject);
     procedure SpeedButton18Click(Sender: TObject);
     procedure SpeedButton19Click(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure SpeedButton20Click(Sender: TObject);
+    procedure SpeedButton21Click(Sender: TObject);
   private
     { Private declarations }
     procedure PrintStrings(Strings: TStrings);
@@ -95,6 +99,7 @@ type
     FTexto: WideString;
     FSalvar: boolean;
     FCaminhoArquivo: string;
+    FOpenPictureDialog: TOpenPictureDialog;
   public
     { Public declarations }
   end;
@@ -110,11 +115,6 @@ procedure TFormPrincipal.acAbrirExecute(Sender: TObject);
 begin
   showmessage('Teste');
 end;
-
-procedure TFormPrincipal.Button1Click(Sender: TObject);
-begin
-// RxRichEdit1.DrawEndPage := true;
- end;
 
 procedure TFormPrincipal.Button5Click(Sender: TObject);
 begin
@@ -185,6 +185,16 @@ begin
   with RxRichEdit1 do
     if CanFocus then
       SetFocus;
+end;
+
+procedure TFormPrincipal.FormCreate(Sender: TObject);
+begin
+  FOpenPictureDialog := TOpenPictureDialog.Create(Self);
+end;
+
+procedure TFormPrincipal.FormDestroy(Sender: TObject);
+begin
+  FOpenPictureDialog.Free;
 end;
 
 procedure TFormPrincipal.FormShow(Sender: TObject);
@@ -402,6 +412,29 @@ begin
 
 end;
 
+procedure TFormPrincipal.SpeedButton20Click(Sender: TObject);
+var
+  Pict: TPicture;
+begin
+  with FOpenPictureDialog do begin
+    if Execute then begin
+      Pict := TPicture.Create;
+      try
+        Pict.LoadFromFile(FileName);
+        Clipboard.Assign(Pict);
+        RxRichEdit1.PasteFromClipboard;
+      finally
+        Pict.Free;
+      end;
+    end;
+  end;
+end;
+
+procedure TFormPrincipal.SpeedButton21Click(Sender: TObject);
+begin
+  RxRichEdit1.Paragraph.Alignment := paJustify;
+end;
+
 procedure TFormPrincipal.SpeedButton2Click(Sender: TObject);
 begin
   RxRichEdit1.Clear;
@@ -446,7 +479,7 @@ end;
 
 procedure TFormPrincipal.SpeedButton6Click(Sender: TObject);
 begin
-  RxRichEdit1.Paragraph.Alignment := paLeftJustify
+  RxRichEdit1.Paragraph.Alignment := paLeftJustify;
 end;
 
 procedure TFormPrincipal.SpeedButton7Click(Sender: TObject);
